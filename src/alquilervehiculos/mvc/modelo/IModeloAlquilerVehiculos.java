@@ -8,6 +8,7 @@ package alquilervehiculos.mvc.modelo;
 import alquilervehiculos.mvc.modelo.dominio.Alquiler;
 import alquilervehiculos.mvc.modelo.dominio.Cliente;
 import alquilervehiculos.mvc.modelo.dominio.vehiculo.Vehiculo;
+import java.util.List;
 
 /**
  *
@@ -18,7 +19,7 @@ public interface IModeloAlquilerVehiculos
 
     Alquiler[] obtenerAlquileres();
 
-    Cliente[] obtenerClientes();
+    List<Cliente> obtenerClientes();
 
     Vehiculo[] obtenerVehiculos();
 

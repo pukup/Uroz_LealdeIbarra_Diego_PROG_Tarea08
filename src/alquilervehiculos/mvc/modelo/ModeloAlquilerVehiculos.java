@@ -11,6 +11,7 @@ import alquilervehiculos.mvc.modelo.dao.Vehiculos;
 import alquilervehiculos.mvc.modelo.dominio.Alquiler;
 import alquilervehiculos.mvc.modelo.dominio.Cliente;
 import alquilervehiculos.mvc.modelo.dominio.vehiculo.Vehiculo;
+import java.util.List;
 
 /**
  *
@@ -37,7 +38,7 @@ public class ModeloAlquilerVehiculos implements IModeloAlquilerVehiculos
     }
 
     @Override
-    public Cliente[] obtenerClientes()
+    public List<Cliente> obtenerClientes()
     {
         return clientes.getClientes();
     }

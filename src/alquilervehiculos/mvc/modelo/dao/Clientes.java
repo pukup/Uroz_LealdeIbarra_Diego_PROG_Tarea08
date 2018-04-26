@@ -15,6 +15,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  *
@@ -23,96 +29,67 @@ import java.io.ObjectOutputStream;
 public class Clientes
 {
 
-    private final int MAX_CLIENTES = 20;
-    private Cliente[] clientes;
+    private Map<String, Cliente> clientes;
     private final String PATH_FICHERO = "datos/clientes.dat";
 
     public Clientes()
     {
-        clientes = new Cliente[MAX_CLIENTES];
-    }
-
-    public Cliente[] getClientes()
-    {
-        return clientes.clone();
+        clientes = new HashMap<String, Cliente>();
     }
 
     public void anadir(Cliente cliente)
     {
-        if (clientes[posicionLibre()] == null)
+        if (cliente == null || clientes.containsKey(cliente.getDni()))
         {
-            clientes[posicionLibre()] = cliente;
-            //System.out.println("Cliente añadido.");
+            throw new ExcepcionAlquilerVehiculos("El cliente ya existe.");
         } else
         {
-            throw new ExcepcionAlquilerVehiculos("Array clientes lleno.\n");
+            clientes.put(cliente.getDni(), cliente);
         }
-    }
-
-    private int posicionLibre()
-    {
-        int i = 0;
-        while (clientes[i] != null && indiceMenorTamañoArray(i))
-        {
-            i++;
-        }
-        return i;
     }
 
     public void borrar(String dni)
     {
-        if (clienteEncontrado(dni))
+        if (clientes.containsKey(dni))
         {
-            desplazarIzquierda(posicionCliente(dni));
-            //System.out.println("Cliente eliminado.");
+            clientes.remove(dni);
         } else
         {
-            throw new ExcepcionAlquilerVehiculos("Cliente inexistente.\n");
+            throw new ExcepcionAlquilerVehiculos("El cliente no existe.");
         }
     }
 
-    private boolean clienteEncontrado(String dni)
+    public List<Cliente> getClientes()
     {
-        return clientes[posicionCliente(dni)] != null && clientes[posicionCliente(dni)].getDni().equals(dni);
+
+        List<Cliente> clientesOrdenados = new Vector<Cliente>(clientes.values());
+
+        Collections.sort(clientesOrdenados, ordenadorNombre());
+
+        return clientesOrdenados;
     }
 
-    private int posicionCliente(String dni)
+    private Comparator<Cliente> ordenadorNombre()
     {
-        int i = 0;
-        while (clientes[i] != null
-                && !clientes[i].getDni().equals(dni)
-                && indiceMenorTamañoArray(i))
+        return new Comparator<Cliente>()
         {
-            i++;
-        }
-        return i;
-    }
-
-    private boolean indiceMenorTamañoArray(int i)
-    {
-        return i < clientes.length - 1;
-    }
-
-    private void desplazarIzquierda(int posicion)
-    {
-        for (int i = posicion; indiceMenorTamañoArray(i) && clientes[i] != null; i++)
-        {
-            clientes[i] = clientes[i + 1];
-        }
+            public int compare(Cliente c1, Cliente c2)
+            {
+                return c1.getNombre().compareTo(c2.getNombre());
+            }
+        };
     }
 
     public Cliente getCliente(String dni)
     {
-        if (clienteEncontrado(dni))
+        if (clientes.containsKey(dni))
         {
-            return clientes[posicionCliente(dni)];
+            return new Cliente(clientes.get(dni));
         } else
         {
-            throw new ExcepcionAlquilerVehiculos("Cliente no encontrado.\n");
+            throw new ExcepcionAlquilerVehiculos("El cliente no existe.");
         }
     }
-    
-    
 
     public void escribirFicheroObjetos()
     {
@@ -120,7 +97,10 @@ public class Clientes
         {
             FileOutputStream ficheroFLujoSalida = new FileOutputStream(crearNevoFichero());
             ObjectOutputStream flujoSalidaObjetos = new ObjectOutputStream(ficheroFLujoSalida);
-            flujoSalidaObjetos.writeObject((Cliente[]) clientes);
+            for (Cliente cliente : clientes.values())
+            {
+                flujoSalidaObjetos.writeObject(cliente);
+            }
             flujoSalidaObjetos.close();
             //System.out.println("Fichero clientes escrito.");
         } catch (FileNotFoundException e)
@@ -146,7 +126,13 @@ public class Clientes
             ObjectInputStream FlujoEntradaObjetos = new ObjectInputStream(ficheroFlujoEntrada);
             try
             {
-                clientes = (Cliente[]) FlujoEntradaObjetos.readObject();
+                while (true)
+                {
+                    Cliente cliente = (Cliente) FlujoEntradaObjetos.readObject();
+                    clientes.put(cliente.getDni(), cliente);
+                }
+            } catch (EOFException eo)
+            {
                 FlujoEntradaObjetos.close();
                 System.out.println("Fichero clientes leído.");
                 actualizarUltimoIdentificador();
@@ -174,14 +160,12 @@ public class Clientes
     private int getUltimoIdentificadorEnFichero()
     {
         int ultimoIdentificador = 0;
-        int i = 0;
-        while (clientes[i] != null)
+        for (Cliente cliente : clientes.values())
         {
-            if (clientes[i].getIdentificador() > ultimoIdentificador)
+            if (cliente.getIdentificador() > ultimoIdentificador)
             {
-                ultimoIdentificador = clientes[i].getIdentificador();
+                ultimoIdentificador = cliente.getIdentificador();
             }
-            i++;
         }
         return ultimoIdentificador;
     }

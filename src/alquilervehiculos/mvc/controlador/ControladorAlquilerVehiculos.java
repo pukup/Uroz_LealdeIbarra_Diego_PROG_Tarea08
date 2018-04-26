@@ -10,6 +10,7 @@ import alquilervehiculos.mvc.modelo.dominio.Alquiler;
 import alquilervehiculos.mvc.modelo.dominio.Cliente;
 import alquilervehiculos.mvc.modelo.dominio.vehiculo.Vehiculo;
 import alquilervehiculos.mvc.vista.IVistaAlquilerVehiculos;
+import java.util.List;
 
 /**
  *
@@ -100,7 +101,7 @@ public class ControladorAlquilerVehiculos implements IControladorAlquilerVehicul
     }
 
     @Override
-    public Cliente[] obtenerClientes()
+    public List<Cliente> obtenerClientes()
     {
         return modelo.obtenerClientes();
     }
