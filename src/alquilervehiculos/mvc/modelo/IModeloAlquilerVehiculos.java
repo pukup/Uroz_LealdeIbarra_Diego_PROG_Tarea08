@@ -21,7 +21,7 @@ public interface IModeloAlquilerVehiculos
 
     List<Cliente> obtenerClientes();
 
-    Vehiculo[] obtenerVehiculos();
+    List<Vehiculo> obtenerVehiculos();
 
     void abrirAlquiler(Cliente cliente, Vehiculo vehiculo);
 

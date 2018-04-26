@@ -44,7 +44,7 @@ public class ModeloAlquilerVehiculos implements IModeloAlquilerVehiculos
     }
 
     @Override
-    public Vehiculo[] obtenerVehiculos()
+    public List<Vehiculo> obtenerVehiculos()
     {
         return vehiculos.getVehiculos();
     }

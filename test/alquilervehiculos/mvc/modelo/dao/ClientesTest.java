@@ -48,8 +48,8 @@ public class ClientesTest
         //arrange       
         //act
         cs1.anadir(c1);
-        //assert
-        //assertEquals(c1, cs1.clientes[0]);
+        //assert       
+        assertEquals(1, cs1.getCliente("00000000A").getIdentificador());
     }
 
     @Test
@@ -68,28 +68,14 @@ public class ClientesTest
     {
         //arrange       
         //act
-        cs1.anadir(null);
-        //assert        
-    }
-
-    @Test
-    public void testAnadirLleno()
-    {
-        //arrange
-        //act
-        for (int i = 0; i < 20; i++)
-        {
-            cs1.anadir(c1);
-        }
         try
         {
-            cs1.anadir(c1);
-            fail("Excepción no lanzada.");
+        cs1.anadir(null);
         } catch (ExcepcionAlquilerVehiculos e)
         {
+            
         }
         //assert        
-        //assertEquals(c1, cs1.clientes[19]);
     }
 
     @Test
@@ -129,7 +115,7 @@ public class ClientesTest
         //act
         cs1.anadir(c1);
         //assert
-        assertEquals(c1, cs1.getCliente("00000000A"));
+        assertEquals(1, cs1.getCliente("00000000A").getIdentificador());
     }
 
     @Test

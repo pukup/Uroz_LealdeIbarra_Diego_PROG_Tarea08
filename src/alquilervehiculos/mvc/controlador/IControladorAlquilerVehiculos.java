@@ -40,5 +40,5 @@ public interface IControladorAlquilerVehiculos
 
     List<Cliente> obtenerClientes();
 
-    Vehiculo[] obtenerVehiculos();
+    List<Vehiculo> obtenerVehiculos();
 }

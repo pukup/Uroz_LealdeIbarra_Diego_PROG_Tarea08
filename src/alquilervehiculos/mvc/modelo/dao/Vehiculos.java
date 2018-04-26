@@ -7,6 +7,7 @@ package alquilervehiculos.mvc.modelo.dao;
 
 import alquilervehiculos.mvc.modelo.dominio.ExcepcionAlquilerVehiculos;
 import alquilervehiculos.mvc.modelo.dominio.vehiculo.Vehiculo;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,6 +15,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  *
@@ -22,92 +27,49 @@ import java.io.ObjectOutputStream;
 public class Vehiculos
 {
 
-    public Vehiculo[] vehiculos;
-    private static final int MAX_VEHICULOS = 20;
+    private Map<String, Vehiculo> vehiculos;
     private static final String PATH_FICHERO = "datos/vehiculos.dat";
 
     public Vehiculos()
     {
-        vehiculos = new Vehiculo[MAX_VEHICULOS];
-    }
-
-    public Vehiculo[] getVehiculos()
-    {
-        return vehiculos.clone();
+        vehiculos = new HashMap<String, Vehiculo>();
     }
 
     public void anadir(Vehiculo vehiculo)
     {
-        if (vehiculos[posicionLibre()] == null)
+        if (vehiculo == null || vehiculos.containsKey(vehiculo.getMatricula()))
         {
-            vehiculos[posicionLibre()] = vehiculo;
+            throw new ExcepcionAlquilerVehiculos("El vehículo ya existe");
         } else
         {
-            throw new ExcepcionAlquilerVehiculos("Array vehiculos lleno.\n");
+            vehiculos.put(vehiculo.getMatricula(), vehiculo);
         }
-
-    }
-
-    private int posicionLibre()
-    {
-        int i = 0;
-        while (vehiculos[i] != null && indiceMenorTamañoArray(i))
-        {
-            i++;
-        }
-        return i;
-    }
-
-    private boolean indiceMenorTamañoArray(int i)
-    {
-        return i < vehiculos.length - 1;
     }
 
     public void borrar(String matricula)
     {
-        if (vehiculoEncontrado(matricula))
+        if (vehiculos.containsKey(matricula))
         {
-            desplazarIzquierda(posicionVehiculo(matricula));
+            vehiculos.remove(matricula);
         } else
         {
-            throw new ExcepcionAlquilerVehiculos("Vehiculo inexsistente.\n");
+            throw new ExcepcionAlquilerVehiculos("El vehículo no existe");
         }
     }
 
-    private boolean vehiculoEncontrado(String matricula)
+    public List<Vehiculo> getVehiculos()
     {
-        return vehiculos[posicionVehiculo(matricula)] != null
-                && vehiculos[posicionVehiculo(matricula)].getMatricula().equals(matricula);
-    }
-
-    private void desplazarIzquierda(int posicion)
-    {
-        for (int i = posicion; indiceMenorTamañoArray(i) && vehiculos[i] != null; i++)
-        {
-            vehiculos[i] = vehiculos[i + 1];
-        }
-    }
-
-    private int posicionVehiculo(String matricula)
-    {
-        int i = 0;
-        while (vehiculos[i] != null
-                && !vehiculos[i].getMatricula().equals(matricula)
-                && indiceMenorTamañoArray(i))
-        {
-            i++;
-        }
-        return i;
+        return new Vector<Vehiculo>(vehiculos.values());
     }
 
     public Vehiculo getVehiculo(String matricula)
     {
-        if (vehiculoEncontrado(matricula))
+        if (vehiculos.containsKey(matricula))
         {
-            return vehiculos[posicionVehiculo(matricula)];
+            return vehiculos.get(matricula);
         } else
         {
-            throw new ExcepcionAlquilerVehiculos("Vehiculo no encontrado.\n");
+            throw new ExcepcionAlquilerVehiculos("El vehículo no existe");
         }
     }
 
@@ -117,7 +79,10 @@ public class Vehiculos
         {
             FileOutputStream ficheroFlujoSalida = new FileOutputStream(nuevoFichero());
             ObjectOutputStream flujoSalidaObjetos = new ObjectOutputStream(ficheroFlujoSalida);
-            flujoSalidaObjetos.writeObject((Vehiculo[]) vehiculos);
+            for (Vehiculo vehiculo : vehiculos.values())
+            {
+                flujoSalidaObjetos.writeObject(vehiculo);
+            }
             flujoSalidaObjetos.close();
         } catch (FileNotFoundException e)
         {
@@ -142,7 +107,13 @@ public class Vehiculos
             ObjectInputStream FlujoEntradaObjetos = new ObjectInputStream(ficheroFlujoEntrada);
             try
             {
-                vehiculos = (Vehiculo[]) FlujoEntradaObjetos.readObject();
+                while (true)
+                {
+                    Vehiculo vehiculo = (Vehiculo) FlujoEntradaObjetos.readObject();
+                    vehiculos.put(vehiculo.getMatricula(), vehiculo);
+                }
+            } catch (EOFException eo)
+            {
                 FlujoEntradaObjetos.close();
                 //System.out.println("Fichero clientes leído.");
             } catch (ClassNotFoundException e)

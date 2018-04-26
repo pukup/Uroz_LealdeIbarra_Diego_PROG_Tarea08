@@ -46,7 +46,7 @@ public class VehiculosTest
         //act
         vs1.anadir(v1);
         //assert
-        assertEquals(v1, vs1.vehiculos[0]);
+        assertEquals("a",vs1.getVehiculo("0000XXX").getMarca());
     }
 
     @Test
@@ -57,28 +57,7 @@ public class VehiculosTest
         vs1.anadir(v1);
         vs1.anadir(v2);
         //assert
-        assertEquals(v1, vs1.vehiculos[0]);
-        assertEquals(v2, vs1.vehiculos[1]);
-    }
-
-    @Test
-    public void testAnadirLleno()
-    {
-        //arrange       
-        //act
-        for (int i = 0; i < 20; i++)
-        {
-            vs1.anadir(v1);
-        }
-        try
-        {
-            vs1.anadir(v1);
-            fail("Excepción no lanzada.");
-        } catch (ExcepcionAlquilerVehiculos e)
-        {
-            System.out.println(e);
-        }
-        //assert
+        assertEquals("b",vs1.getVehiculo("0000BBB").getMarca());
     }
 
     @Test
@@ -89,7 +68,7 @@ public class VehiculosTest
         vs1.anadir(v1);
         vs1.borrar("0000XXX");
         //assert
-        assertEquals(null, vs1.vehiculos[0]);
+        
     }
 
     @Test
@@ -97,8 +76,6 @@ public class VehiculosTest
     {
         //arrange       
         //act
-        vs1.anadir(v1);
-        vs1.borrar("0000XXX");
         try
         {
             vs1.borrar("0000XXX");
@@ -108,7 +85,6 @@ public class VehiculosTest
             System.out.println(e);
         }
         //assert
-        assertEquals(null, vs1.vehiculos[0]);
     }
 
     @Test
@@ -118,7 +94,7 @@ public class VehiculosTest
         //act
         vs1.anadir(v1);
         //assert
-        assertEquals(v1, vs1.getVehiculo("0000XXX"));
+        assertEquals("a", vs1.getVehiculo("0000XXX").getMarca());
     }
 
     @Test

@@ -107,7 +107,7 @@ public class ControladorAlquilerVehiculos implements IControladorAlquilerVehicul
     }
 
     @Override
-    public Vehiculo[] obtenerVehiculos()
+    public List<Vehiculo> obtenerVehiculos()
     {
         return modelo.obtenerVehiculos();
     }
