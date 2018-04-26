@@ -13,7 +13,7 @@ import alquilervehiculos.mvc.controlador.ControladorAlquilerVehiculos;
  */
 public interface IVistaAlquilerVehiculos
 {
-    
+
     void abrirAlquiler();
 
     void anadirCliente();
@@ -33,6 +33,12 @@ public interface IVistaAlquilerVehiculos
     void comenzar();
 
     void listarAlquileres();
+
+    void listarAlquileresAbiertos();
+
+    void listarAlquileresCliente();
+
+    void listarAlquileresVehiculo();
 
     void listarClientes();
 

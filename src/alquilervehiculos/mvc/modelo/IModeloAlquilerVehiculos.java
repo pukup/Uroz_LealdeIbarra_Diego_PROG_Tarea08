@@ -17,7 +17,13 @@ import java.util.List;
 public interface IModeloAlquilerVehiculos
 {
 
-    Alquiler[] obtenerAlquileres();
+    List <Alquiler> obtenerAlquileres();
+    
+    List <Alquiler> obtenerAlquileresAbiertos();
+    
+    List <Alquiler> obtenerAlquileresCliente(String dni);
+    
+    List <Alquiler> obtenerAlquileresVehiculos(String matricula);
 
     List<Cliente> obtenerClientes();
 
@@ -37,7 +43,7 @@ public interface IModeloAlquilerVehiculos
 
     Cliente buscarCliente(String dni);
 
-    Vehiculo buscarVehiculo(String matricula);
+    Vehiculo buscarVehiculo(String matricula);       
 
     void leerClientes();
 

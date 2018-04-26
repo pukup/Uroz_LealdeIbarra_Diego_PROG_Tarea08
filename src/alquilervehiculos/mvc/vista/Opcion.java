@@ -96,6 +96,30 @@ public enum Opcion
         {
             vista.listarAlquileres();
         }
+    },
+    
+    LISTAR_ALQUILERES_ABIERTOS("Alquileres abiertos")
+    {
+        public void ejecutar()
+        {
+            vista.listarAlquileresAbiertos();
+        }
+    },
+    
+    LISTAR_ALQUILERES_CLIENTES("Alquileres cliente")
+    {
+        public void ejecutar()
+        {
+            vista.listarAlquileresCliente();
+        }
+    },
+    
+    LISTAR_ALQUILERES_VEHICULOS("Alquileres vehiculo")
+    {
+        public void ejecutar()
+        {
+            vista.listarAlquileresVehiculo();
+        }
     };
 
     private String mensaje;

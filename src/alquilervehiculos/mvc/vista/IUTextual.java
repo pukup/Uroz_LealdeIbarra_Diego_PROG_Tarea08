@@ -206,6 +206,53 @@ public class IUTextual implements IVistaAlquilerVehiculos
     }
 
     @Override
+    public void listarAlquileresAbiertos()
+    {
+        Consola.mostrarCabecera("Alquileres abiertos.");
+        for (Alquiler alquiler : controlador.obtenerAlquileresAbiertos())
+        {
+            System.out.println(alquiler);
+        }
+        System.out.println("");
+    }
+
+    @Override
+    public void listarAlquileresCliente()
+    {
+        String dni = Consola.leerDni();
+        Consola.mostrarCabecera("Alquileres de cliente.");
+        try
+        {
+            for (Alquiler alquiler : controlador.obtenerAlquileresCliente(dni))
+            {
+                    System.out.println(alquiler);
+            }
+            System.out.println("");
+        } catch (ExcepcionAlquilerVehiculos e)
+        {
+            System.out.println(e);
+        }
+    }
+    
+        @Override
+    public void listarAlquileresVehiculo()
+    {
+        String matricula = Consola.leerMatricula();
+        Consola.mostrarCabecera("Alquileres de vehículo.");
+        try
+        {
+            for (Alquiler alquiler : controlador.obtenerAlquileresVehiculo(matricula))
+            {
+                    System.out.println(alquiler);
+            }
+            System.out.println("");
+        } catch (ExcepcionAlquilerVehiculos e)
+        {
+            System.out.println(e);
+        }
+    }
+
+    @Override
     public void listarClientes()
     {
         Consola.mostrarCabecera("Listado de clientes.");

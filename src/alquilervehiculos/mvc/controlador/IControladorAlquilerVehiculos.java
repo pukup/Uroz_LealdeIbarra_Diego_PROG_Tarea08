@@ -16,6 +16,7 @@ import java.util.List;
  */
 public interface IControladorAlquilerVehiculos
 {
+
     void abrirAlquiler(Cliente cliente, Vehiculo turismo);
 
     void anadirCliente(Cliente cliente);
@@ -36,7 +37,13 @@ public interface IControladorAlquilerVehiculos
 
     void salir();
 
-    Alquiler[] obtenerAlquileres();
+    List<Alquiler> obtenerAlquileres();
+
+    List<Alquiler> obtenerAlquileresAbiertos();
+
+    List<Alquiler> obtenerAlquileresCliente(String dni);
+
+    List<Alquiler> obtenerAlquileresVehiculo(String matricula);
 
     List<Cliente> obtenerClientes();
 

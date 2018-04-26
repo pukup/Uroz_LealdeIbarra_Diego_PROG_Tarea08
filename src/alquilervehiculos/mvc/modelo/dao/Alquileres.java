@@ -9,6 +9,7 @@ import alquilervehiculos.mvc.modelo.dominio.Alquiler;
 import alquilervehiculos.mvc.modelo.dominio.Cliente;
 import alquilervehiculos.mvc.modelo.dominio.ExcepcionAlquilerVehiculos;
 import alquilervehiculos.mvc.modelo.dominio.vehiculo.Vehiculo;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,6 +17,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
+import java.util.Vector;
 
 /**
  *
@@ -24,46 +27,30 @@ import java.io.ObjectOutputStream;
 public class Alquileres
 {
 
-    private final int MAX_ALQUILERES = 20;
-    private Alquiler[] alquileres;
+    private List<Alquiler> alquileres;
     private final String PATH_FICHERO = "datos/alquileres.dat";
 
     public Alquileres()
     {
-        alquileres = new Alquiler[MAX_ALQUILERES];
-    }
-
-    public Alquiler[] getAlquileres()
-    {
-        return alquileres.clone();
+        alquileres = new Vector<Alquiler>();
     }
 
     public void abrir(Cliente cliente, Vehiculo vehiculo)
     {
-        if (alquileres[posicionLibre()] == null && vehiculo.getDisponible())
+        if (vehiculo.getDisponible())
         {
-            alquileres[posicionLibre()] = new Alquiler(cliente, vehiculo);
+            alquileres.add(new Alquiler(cliente, vehiculo));
         } else
         {
-            throw new ExcepcionAlquilerVehiculos("Espacio agotado o vehículo no disponible.");
+            throw new ExcepcionAlquilerVehiculos("Vehículo no disponible.");
         }
-    }
-
-    private int posicionLibre()
-    {
-        int i = 0;
-        while (alquileres[i] != null && i < alquileres.length - 1)
-        {
-            i++;
-        }
-        return i;
     }
 
     public void cerrar(String matricula)
     {
-        if (alquilerEncontrado(matricula) && alquileres[posicionAlquiler(matricula)].getAlquilerAbierto())
+        if (alquilerEncontrado(matricula) && alquileres.get(posicionAlquiler(matricula)).getAlquilerAbierto())
         {
-            alquileres[posicionAlquiler(matricula)].close();
+            alquileres.get(posicionAlquiler(matricula)).close();
         } else
         {
             throw new ExcepcionAlquilerVehiculos("Alquiler no encontrado o cerrado.");
@@ -72,20 +59,70 @@ public class Alquileres
 
     private boolean alquilerEncontrado(String matricula)
     {
-        return alquileres[posicionAlquiler(matricula)] != null
-                && alquileres[posicionAlquiler(matricula)].getVehiculo().getMatricula().equals(matricula);
+        return alquileres.get(posicionAlquiler(matricula)).getVehiculo().getMatricula().equals(matricula);
     }
 
     public int posicionAlquiler(String matricula)
     {
         int i = 0;
-        while (alquileres[i] != null
-                && !alquileres[i].getVehiculo().getMatricula().equals(matricula)
-                && i < alquileres.length - 1)
+        while (!alquileres.get(i).getVehiculo().getMatricula().equals(matricula)
+                && i < alquileres.size() - 1)
         {
             i++;
         }
         return i;
+    }
+
+    public List<Alquiler> getAlquileres()
+    {
+        return new Vector<Alquiler>(alquileres);
+    }
+
+    public List<Alquiler> getAbiertos()
+    {
+        int i = 0;
+        List<Alquiler> abiertos = new Vector<Alquiler>();
+        while (i < alquileres.size())
+        {
+            if (alquileres.get(i).getAlquilerAbierto())
+            {
+                abiertos.add(alquileres.get(i));
+            }
+            i++;
+        }
+        return abiertos;
+    }
+
+    public List<Alquiler> getAlquileresCliente(String dni)
+    {
+        int i = 0;
+        List<Alquiler> alquileresCliente = new Vector<Alquiler>();
+
+        while (i < alquileres.size())
+        {
+            if (alquileres.get(i).getCliente().getDni().equals(dni))
+            {
+                alquileresCliente.add(alquileres.get(i));
+            }
+            i++;
+        }
+        return alquileresCliente;
+    }
+
+    public List<Alquiler> getAlquileresVehiculo(String matricula)
+    {
+        int i = 0;
+        List<Alquiler> alquileresVehiculo = new Vector<Alquiler>();
+
+        while (i < alquileres.size())
+        {
+            if (alquileres.get(i).getVehiculo().getMatricula().equals(matricula))
+            {
+                alquileresVehiculo.add(alquileres.get(i));
+            }
+            i++;
+        }
+        return alquileresVehiculo;
     }
 
     public void escribirFicheroObjetos()
@@ -94,7 +131,10 @@ public class Alquileres
         {
             FileOutputStream ficheroFLujoSalida = new FileOutputStream(crearNevoFichero());
             ObjectOutputStream flujoSalidaObjetos = new ObjectOutputStream(ficheroFLujoSalida);
-            flujoSalidaObjetos.writeObject((Alquiler[]) alquileres);
+            for (Alquiler alquiler : alquileres)
+            {
+                flujoSalidaObjetos.writeObject(alquiler);
+            }
             flujoSalidaObjetos.close();
             //System.out.println("Fichero alquileres escrito.");
         } catch (FileNotFoundException e)
@@ -120,7 +160,13 @@ public class Alquileres
             ObjectInputStream FlujoEntradaObjetos = new ObjectInputStream(ficheroFlujoEntrada);
             try
             {
-                alquileres = (Alquiler[]) FlujoEntradaObjetos.readObject();
+                while (true)
+                {
+                    Alquiler alquiler = (Alquiler) FlujoEntradaObjetos.readObject();
+                    alquileres.add(alquiler);
+                }
+            } catch (EOFException eo)
+            {
                 FlujoEntradaObjetos.close();
                 System.out.println("Fichero alquileres leído.");
             } catch (ClassNotFoundException e)

@@ -39,7 +39,7 @@ public class Alquiler implements Serializable
     {
         if (vehiculo.getDisponible())
         {
-            AlquilerAbierto(true);
+            setAlquilerAbierto(true);
             setCliente(cliente);
             setVehiculo(vehiculo);
             setFechaInicioALquiler();
@@ -49,9 +49,9 @@ public class Alquiler implements Serializable
         }
     }
 
-    private void AlquilerAbierto(boolean abierto)
+    private void setAlquilerAbierto(boolean estado)
     {
-        alquilerAbierto = abierto;
+        alquilerAbierto = estado;
     }
 
     private void setCliente(Cliente cliente)
@@ -77,7 +77,7 @@ public class Alquiler implements Serializable
         if (getAlquilerAbierto())
         {
             vehiculo.setDisponible(true);
-            AlquilerAbierto(false);
+            setAlquilerAbierto(false);
             cliente.setAlquilerVigente(false);
             setFechaFinAlquiler();
         } else

@@ -32,9 +32,27 @@ public class ModeloAlquilerVehiculos implements IModeloAlquilerVehiculos
     }
 
     @Override
-    public Alquiler[] obtenerAlquileres()
+    public List<Alquiler> obtenerAlquileres()
     {
         return alquileres.getAlquileres();
+    }
+
+    @Override
+    public List<Alquiler> obtenerAlquileresAbiertos()
+    {
+        return alquileres.getAbiertos();
+    }
+
+    @Override
+    public List<Alquiler> obtenerAlquileresCliente(String dni)
+    {
+        return alquileres.getAlquileresCliente(dni);
+    }
+
+    @Override
+    public List<Alquiler> obtenerAlquileresVehiculos(String matricula)
+    {
+        return alquileres.getAlquileresVehiculo(matricula);
     }
 
     @Override

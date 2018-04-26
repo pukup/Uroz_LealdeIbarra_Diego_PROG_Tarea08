@@ -8,6 +8,7 @@ package alquilervehiculos.mvc.modelo.dao;
 import alquilervehiculos.mvc.modelo.dao.Alquileres;
 import static alquilervehiculos.mvc.modelo.dao.ClientesTest.c1;
 import static alquilervehiculos.mvc.modelo.dao.ClientesTest.cs1;
+import alquilervehiculos.mvc.modelo.dominio.Alquiler;
 import alquilervehiculos.mvc.modelo.dominio.Cliente;
 import alquilervehiculos.mvc.modelo.dominio.ExcepcionAlquilerVehiculos;
 import alquilervehiculos.mvc.modelo.dominio.vehiculo.Turismo;
@@ -45,6 +46,7 @@ public class AlquileresTest
     @Before
     public void setUp()
     {
+        as1.abrir(c1, v1);
     }
 
 //    @Test
@@ -110,4 +112,16 @@ public class AlquileresTest
 //        as1.cerrar("0000XXX");
 //        //assert
 //    }
+    
+    @Test
+    public void testListarAlquileresCliente()
+    {
+        //arrange
+        //act
+        for (Alquiler alquiler : as1.getAlquileresCliente("00000000A"))
+            {
+                    System.out.println(alquiler);
+            }
+            System.out.println("");
+    }
 }
